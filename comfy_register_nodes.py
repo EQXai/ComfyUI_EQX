@@ -17,24 +17,35 @@ class LoadPromptFromFileEQXNode:
     CATEGORY = "Load"
 
     def load_prompt(self, file_path, seed):
+        # Si no existe el fichero, devolvemos vacíos
         if not os.path.isfile(file_path):
             return "", "", "", seed
-        with open(file_path, 'r') as file:
-            data = file.read()
-        pattern = r"\{{{(.*?)}}}{{(.*?)}}{([^}]*?)}"
-        matches = re.finditer(pattern, data)
+
         prompt_list = []
-        for match in matches:
-            prompt_list.append(match.groups())
+        # Leemos línea a línea y extraemos ID, prompt positivo y negativo
+        with open(file_path, 'r', encoding='utf-8') as file:
+            for raw_line in file:
+                line = raw_line.strip()
+                # Eliminamos coma final si existe
+                if line.endswith(','):
+                    line = line[:-1]
+                # Pattern: {{{ID}}}{{positive}}{{negative}}
+                m = re.match(r"\{\{\{([^}]*)\}\}\}\{\{([^}]*)\}\}\{([^}]*)\}", line)
+                if m:
+                    identificador, positive, negative = m.groups()
+                    prompt_list.append((identificador.strip(), positive.strip(), negative.strip()))
+
         if not prompt_list:
             return "", "", "", seed
+
+        # Selección basada en seed
         index = seed % len(prompt_list)
-        identificador, positive_prompt, negative_prompt = prompt_list[index]
+        identificador, positive, negative = prompt_list[index]
         seed += 1
         return (
-            identificador.strip(),
-            positive_prompt.strip(),
-            negative_prompt.strip(),
+            identificador,
+            positive,
+            negative,
             seed
         )
 
