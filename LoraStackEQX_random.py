@@ -61,8 +61,8 @@ class LoraStackEQX_random:
         random.seed(current_seed)
         selected_files = random.sample(all_files, n)
 
-        # Sort selected files alphabetically by base filename
-        selected_files.sort(key=lambda f: Path(f).name)
+        # Sort selected files alphabetically by base filename (case-insensitive)
+        selected_files.sort(key=lambda f: Path(f).name.lower())
 
         stack = []
         lines = []
