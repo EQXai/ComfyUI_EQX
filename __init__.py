@@ -21,10 +21,11 @@ from .comfy_register_nodes import LoadPromptFromFileEQXNode
 NODE_CLASS_MAPPINGS["Load Prompt From File - EQX"] = LoadPromptFromFileEQXNode
 NODE_DISPLAY_NAME_MAPPINGS["Load Prompt From File - EQX"] = "Load Prompt From File - EQX"
 
-# EQX_LoraStack100
-from .LoraStackEQX100 import EQX_LoraStack100
-NODE_CLASS_MAPPINGS["EQX_LoraStack100"] = EQX_LoraStack100
-NODE_DISPLAY_NAME_MAPPINGS["EQX_LoraStack100"] = "EQX_LoraStack100"
+
+# LoraStackEQX_random
+from .LoraStackEQX_random import LoraStackEQX_random
+NODE_CLASS_MAPPINGS["LoraStackEQX_random"] = LoraStackEQX_random
+NODE_DISPLAY_NAME_MAPPINGS["LoraStackEQX_random"] = "Lora Stack EQX (Random)"
 
 # Extract Filename - EQX
 from .extract_filename import ExtractFilename
