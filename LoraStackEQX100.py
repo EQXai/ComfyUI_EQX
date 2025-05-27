@@ -1,10 +1,12 @@
+# This file is intentionally left blank. The actual content is in the original file. 
+
 import folder_paths
 import random
 import time
 
 class EQX_LoraStack100:
     FIXED_SELECTION_100 = None
-    INTERNAL_SEED_100 = int(time.time() * 1000)
+    INTERNAL_SEED_100 = int(time.time() * 1000) # Keep this multiplication factor for seed generation
 
     UsedLorasMap100 = {}
     StridesMap100 = {}
@@ -17,10 +19,10 @@ class EQX_LoraStack100:
         required_inputs = {
             "selection_fix": ("BOOLEAN", {"default": False}),
             "exclusive_mode": (["Off", "On"],),
-            "stride": (("INT", {"default": 1, "min": 1, "max": 100})),
+            "stride": (("INT", {"default": 1, "min": 1, "max": 100})), # Max stride changed to 100
             "force_randomize_after_stride": (["Off", "On"],),
         }
-        for i in range(1, 101):
+        for i in range(1, 101): # Range changed to 101
             required_inputs[f"lora_name_{i}"] = (loras,)
             required_inputs[f"switch_{i}"] = (["Off", "On"],)
 
@@ -30,49 +32,49 @@ class EQX_LoraStack100:
         }
 
     RETURN_TYPES = ("LORA_STACK",)
-    FUNCTION = "random_lora_stacker_100"
-    CATEGORY = "Comfyroll/LoRA - 100 Slots"
+    FUNCTION = "random_lora_stacker_100" # Function name changed
+    CATEGORY = "Comfyroll/LoRA - 100 Slots" # Category name changed
 
     DEFAULT_CHANCE = 1.0
     DEFAULT_MODEL_WEIGHT = 0.3
     DEFAULT_CLIP_WEIGHT = 1.0
     
     @staticmethod
-    def getIdHash100(*lora_names) -> int:
+    def getIdHash100(*lora_names) -> int: # Method name changed
         return hash(frozenset(set(lora_names)))
 
     @staticmethod
-    def deduplicateLoraNames100(*lora_names):
+    def deduplicateLoraNames100(*lora_names): # Method name changed
         lora_names = list(lora_names)
         name_counts = {}
         for i, name in enumerate(lora_names):
             if name != "None":
                 count = name_counts.get(name, 0)
                 if count > 0:
-                    lora_names[i] = f"{name}EQX_LoraStack100_{count+1}"
+                    lora_names[i] = f"{name}EQX_LoraStack100_{count+1}" # Suffix changed
                 name_counts[name] = count + 1
         return lora_names
 
     @staticmethod
-    def cleanLoraName100(lora_name) -> str:
+    def cleanLoraName100(lora_name) -> str: # Method name changed
         import re
-        return re.sub(r'EQX_LoraStack100_\d+', '', lora_name)
+        return re.sub(r'EQX_LoraStack100_\d+', '', lora_name) # Suffix changed in regex
 
     @classmethod
     def IS_CHANGED(cls, selection_fix, exclusive_mode, stride, force_randomize_after_stride, **kwargs):
         cls.INTERNAL_SEED_100 = (cls.INTERNAL_SEED_100 * 1664525 + 1013904223) % 2**32
         if not selection_fix or cls.FIXED_SELECTION_100 is None:
-            new_selection = cls._generate_new_selection_100(exclusive_mode, stride, force_randomize_after_stride, **kwargs)
+            new_selection = cls._generate_new_selection_100(exclusive_mode, stride, force_randomize_after_stride, **kwargs) # Method call changed
             cls.FIXED_SELECTION_100 = new_selection
             return new_selection
         return cls.FIXED_SELECTION_100
 
     @classmethod
-    def _generate_new_selection_100(cls, exclusive_mode, stride, force_randomize_after_stride, **kwargs):
+    def _generate_new_selection_100(cls, exclusive_mode, stride, force_randomize_after_stride, **kwargs): # Method name changed
         import random
         random.seed(cls.INTERNAL_SEED_100)
         
-        num_loras = 100
+        num_loras = 100 # num_loras changed
         lora_names = []
         switches = []
         chances = []
@@ -90,8 +92,8 @@ class EQX_LoraStack100:
         )
 
         # Desduplicar
-        lora_names = cls.deduplicateLoraNames100(*lora_names)
-        id_hash = cls.getIdHash100(*lora_names)
+        lora_names = cls.deduplicateLoraNames100(*lora_names) # Method call changed
+        id_hash = cls.getIdHash100(*lora_names) # Method call changed
 
         if id_hash not in cls.StridesMap100:
             cls.StridesMap100[id_hash] = 0
@@ -137,7 +139,7 @@ class EQX_LoraStack100:
         
         return hash_str
 
-    def random_lora_stacker_100(
+    def random_lora_stacker_100( # Method name changed
         self,
         selection_fix,
         exclusive_mode,
@@ -151,7 +153,7 @@ class EQX_LoraStack100:
         if lora_stack is not None:
             lora_list.extend([l for l in lora_stack if l[0] != "None"])
 
-        num_loras = 100
+        num_loras = 100 # num_loras changed
         lora_names = []
         switches = []
 
@@ -161,8 +163,8 @@ class EQX_LoraStack100:
             lora_names.append(lora_name)
             switches.append(switch)
 
-        lora_names = self.deduplicateLoraNames100(*lora_names)
-        id_hash = self.getIdHash100(*lora_names)
+        lora_names = self.deduplicateLoraNames100(*lora_names) # Method call changed
+        id_hash = self.getIdHash100(*lora_names) # Method call changed
 
         used_loras = self.UsedLorasMap100.get(id_hash, set())
 
@@ -173,7 +175,7 @@ class EQX_LoraStack100:
                 and lora_names[i] in used_loras
             ):
                 lora_list.append((
-                    self.cleanLoraName100(lora_names[i]),
+                    self.cleanLoraName100(lora_names[i]), # Method call changed
                     self.DEFAULT_MODEL_WEIGHT,
                     self.DEFAULT_CLIP_WEIGHT
                 ))
@@ -181,5 +183,5 @@ class EQX_LoraStack100:
         return (lora_list,)
 
 NODE_CLASS_MAPPINGS = {
-    "EQX_LoraStack100": EQX_LoraStack100
-}
+    "EQX_LoraStack100": EQX_LoraStack100 # Class name in mapping changed
+} 
