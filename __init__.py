@@ -21,7 +21,6 @@ from .comfy_register_nodes import LoadPromptFromFileEQXNode
 NODE_CLASS_MAPPINGS["Load Prompt From File - EQX"] = LoadPromptFromFileEQXNode
 NODE_DISPLAY_NAME_MAPPINGS["Load Prompt From File - EQX"] = "Load Prompt From File - EQX"
 
-
 # LoraStackEQX_random
 from .LoraStackEQX_random import LoraStackEQX_random
 NODE_CLASS_MAPPINGS["LoraStackEQX_random"] = LoraStackEQX_random
@@ -36,6 +35,17 @@ NODE_DISPLAY_NAME_MAPPINGS["Extract Filename - EQX"] = "Extract Filename - EQX"
 from .extract_safetensors_filename import ExtractSafetensorsFilename
 NODE_CLASS_MAPPINGS["Extract LORA name - EQX"] = ExtractSafetensorsFilename
 NODE_DISPLAY_NAME_MAPPINGS["Extract LORA name - EQX"] = "Extract LORA name - EQX"
+
+# NSFW Detector
+from .nsfw_detector_eqx import NSFW_Detector_EQX
+NODE_CLASS_MAPPINGS["NSFW Detector EQX"] = NSFW_Detector_EQX
+NODE_DISPLAY_NAME_MAPPINGS["NSFW Detector EQX"] = "NSFW Detector EQX"
+
+# NSFW Detector Advanced EQX
+from .nsfw_detector_advanced_eqx import NSFWDetectorAdvancedEQX
+NODE_CLASS_MAPPINGS["NSFW Detector Advanced EQX"] = NSFWDetectorAdvancedEQX
+NODE_DISPLAY_NAME_MAPPINGS["NSFW Detector Advanced EQX"] = "NSFW Detector Advanced EQX"
+
 
 __all__ = list(NODE_CLASS_MAPPINGS)
 
