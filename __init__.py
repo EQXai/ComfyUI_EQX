@@ -37,6 +37,11 @@ from .extract_safetensors_filename import ExtractSafetensorsFilename
 NODE_CLASS_MAPPINGS["Extract LORA name - EQX"] = ExtractSafetensorsFilename
 NODE_DISPLAY_NAME_MAPPINGS["Extract LORA name - EQX"] = "Extract LORA name - EQX"
 
+# NSFW Detector
+from .nsfw_detector_eqx import NSFW_Detector_EQX
+NODE_CLASS_MAPPINGS["NSFW Detector EQX"] = NSFW_Detector_EQX
+NODE_DISPLAY_NAME_MAPPINGS["NSFW Detector EQX"] = "NSFW Detector EQX"
+
 __all__ = list(NODE_CLASS_MAPPINGS)
 
 print(f"[ComfyUI_EQX] Loaded {len(NODE_CLASS_MAPPINGS)} nodes (v{__version__})")
