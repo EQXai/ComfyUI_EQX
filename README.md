@@ -16,5 +16,3 @@
 | **Count Faces EQX** | Detection | Counts faces in an image with RetinaFace and optionally saves images into sub-folders by face-count. |
 
 ---
-
-Enjoy creating with **ComfyUI EQX** 🎨 
