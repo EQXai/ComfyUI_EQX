@@ -92,6 +92,23 @@ from .nsfw_detector_advanced_eqx import NSFWDetectorAdvancedEQX
 NODE_CLASS_MAPPINGS["NSFW Detector Advanced EQX"] = NSFWDetectorAdvancedEQX
 NODE_DISPLAY_NAME_MAPPINGS["NSFW Detector Advanced EQX"] = "NSFW Detector Advanced EQX"
 
+# Logic Nodes
+from .logic_nodes import NODE_CLASS_MAPPINGS as logic_class_mappings
+from .logic_nodes import NODE_DISPLAY_NAME_MAPPINGS as logic_display_name_mappings
+NODE_CLASS_MAPPINGS.update(logic_class_mappings)
+NODE_DISPLAY_NAME_MAPPINGS.update(logic_display_name_mappings)
+
+# WorkFlow Check
+from .workflow_check_node import NODE_CLASS_MAPPINGS as workflow_check_class_mappings
+from .workflow_check_node import NODE_DISPLAY_NAME_MAPPINGS as workflow_check_display_name_mappings
+NODE_CLASS_MAPPINGS.update(workflow_check_class_mappings)
+NODE_DISPLAY_NAME_MAPPINGS.update(workflow_check_display_name_mappings)
+
+# Check Image Node
+from .check_image_node import NODE_CLASS_MAPPINGS as check_image_class_mappings
+from .check_image_node import NODE_DISPLAY_NAME_MAPPINGS as check_image_display_name_mappings
+NODE_CLASS_MAPPINGS.update(check_image_class_mappings)
+NODE_DISPLAY_NAME_MAPPINGS.update(check_image_display_name_mappings)
 
 # FaceCT Nodes
 # Ensure the main dependency is met before trying to load the nodes.
@@ -101,6 +118,13 @@ if _ensure_package("facexlib"):
         from .face_ct_nodes import NODE_DISPLAY_NAME_MAPPINGS as face_ct_display_name_mappings
         NODE_CLASS_MAPPINGS.update(face_ct_class_mappings)
         NODE_DISPLAY_NAME_MAPPINGS.update(face_ct_display_name_mappings)
+
+        # FaceDetectOut Node
+        from .face_detect_out import NODE_CLASS_MAPPINGS as face_detect_out_class_mappings
+        from .face_detect_out import NODE_DISPLAY_NAME_MAPPINGS as face_detect_out_display_name_mappings
+        NODE_CLASS_MAPPINGS.update(face_detect_out_class_mappings)
+        NODE_DISPLAY_NAME_MAPPINGS.update(face_detect_out_display_name_mappings)
+
     except Exception as e:
         print(f"[ComfyUI_EQX] Warning: Could not import FaceCT nodes even after successful dependency check. Error: {e}")
 
