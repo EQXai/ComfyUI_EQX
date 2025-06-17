@@ -92,11 +92,6 @@ from .nsfw_detector_advanced_eqx import NSFWDetectorAdvancedEQX
 NODE_CLASS_MAPPINGS["NSFW Detector Advanced EQX"] = NSFWDetectorAdvancedEQX
 NODE_DISPLAY_NAME_MAPPINGS["NSFW Detector Advanced EQX"] = "NSFW Detector Advanced EQX"
 
-# Logic Nodes
-from .logic_nodes import NODE_CLASS_MAPPINGS as logic_class_mappings
-from .logic_nodes import NODE_DISPLAY_NAME_MAPPINGS as logic_display_name_mappings
-NODE_CLASS_MAPPINGS.update(logic_class_mappings)
-NODE_DISPLAY_NAME_MAPPINGS.update(logic_display_name_mappings)
 
 # WorkFlow Check
 from .workflow_check_node import NODE_CLASS_MAPPINGS as workflow_check_class_mappings
@@ -104,11 +99,17 @@ from .workflow_check_node import NODE_DISPLAY_NAME_MAPPINGS as workflow_check_di
 NODE_CLASS_MAPPINGS.update(workflow_check_class_mappings)
 NODE_DISPLAY_NAME_MAPPINGS.update(workflow_check_display_name_mappings)
 
-# Check Image Node
-from .check_image_node import NODE_CLASS_MAPPINGS as check_image_class_mappings
-from .check_image_node import NODE_DISPLAY_NAME_MAPPINGS as check_image_display_name_mappings
-NODE_CLASS_MAPPINGS.update(check_image_class_mappings)
-NODE_DISPLAY_NAME_MAPPINGS.update(check_image_display_name_mappings)
+
+# Logic Nodes
+try:
+    from .logic_nodes import NODE_CLASS_MAPPINGS as logic_class_mappings
+    from .logic_nodes import NODE_DISPLAY_NAME_MAPPINGS as logic_display_name_mappings
+    NODE_CLASS_MAPPINGS.update(logic_class_mappings)
+    NODE_DISPLAY_NAME_MAPPINGS.update(logic_display_name_mappings)
+except ImportError:
+    # This can happen if the file is deleted or in the middle of an update.
+    print("[ComfyUI_EQX] Warning: Could not import 'logic_nodes'.")
+
 
 # FaceCT Nodes
 # Ensure the main dependency is met before trying to load the nodes.
