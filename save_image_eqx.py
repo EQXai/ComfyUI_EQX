@@ -83,21 +83,21 @@ class cstr(str):
     def print(self, **kwargs):
         print(self, **kwargs)
 
-cstr.color.add_code("msg", f"{cstr.color.BLUE}WAS Node Suite: {cstr.color.END}")
-cstr.color.add_code("warning", f"{cstr.color.BLUE}WAS Node Suite {cstr.color.LIGHTYELLOW}Warning: {cstr.color.END}")
-cstr.color.add_code("error", f"{cstr.color.RED}WAS Node Suite {cstr.color.END}Error: {cstr.color.END}")
+cstr.color.add_code("msg", f"{cstr.color.BLUE}EQX Node Suite: {cstr.color.END}")
+cstr.color.add_code("warning", f"{cstr.color.BLUE}EQX Node Suite {cstr.color.LIGHTYELLOW}Warning: {cstr.color.END}")
+cstr.color.add_code("error", f"{cstr.color.RED}EQX Node Suite {cstr.color.END}Error: {cstr.color.END}")
 
 # ===== Globals =====
 NODE_FILE = os.path.abspath(__file__)
-WAS_SUITE_ROOT = os.path.dirname(NODE_FILE)
-WAS_CONFIG_DIR = os.environ.get('WAS_CONFIG_DIR', WAS_SUITE_ROOT)
-WAS_DATABASE = os.path.join(WAS_CONFIG_DIR, 'was_suite_settings.json')
-WAS_HISTORY_DATABASE = os.path.join(WAS_CONFIG_DIR, 'was_history.json')
-WAS_CONFIG_FILE = os.path.join(WAS_CONFIG_DIR, 'was_suite_config.json')
+EQX_SUITE_ROOT = os.path.dirname(NODE_FILE)
+EQX_CONFIG_DIR = os.environ.get('EQX_CONFIG_DIR', EQX_SUITE_ROOT)
+EQX_DATABASE = os.path.join(EQX_CONFIG_DIR, 'eqx_suite_settings.json')
+EQX_HISTORY_DATABASE = os.path.join(EQX_CONFIG_DIR, 'eqx_history.json')
+EQX_CONFIG_FILE = os.path.join(EQX_CONFIG_DIR, 'eqx_suite_config.json')
 ALLOWED_EXT = ('.jpeg', '.jpg', '.png', '.tiff', '.gif', '.bmp', '.webp')
 
 # ===== Database =====
-class WASDatabase:
+class EQXDatabase:
     def __init__(self, filepath):
         self.filepath = filepath
         try:
@@ -168,15 +168,15 @@ class WASDatabase:
             cstr(f"Error while saving JSON data: {e}").error.print()
 
 # Initialize DB
-WDB = WASDatabase(WAS_DATABASE)
+EQXDB = EQXDatabase(EQX_DATABASE)
 
 # ===== Token System =====
 class TextTokens:
     def __init__(self):
-        self.WDB = WDB
-        if not self.WDB.getDB().__contains__('custom_tokens'):
-            self.WDB.insertCat('custom_tokens')
-        self.custom_tokens = self.WDB.getDict('custom_tokens')
+        self.EQXDB = EQXDB
+        if not self.EQXDB.getDB().__contains__('custom_tokens'):
+            self.EQXDB.insertCat('custom_tokens')
+        self.custom_tokens = self.EQXDB.getDict('custom_tokens')
         self.tokens = {
             '[time]': str(time.time()).replace('.','_'),
             '[hostname]': socket.gethostname(),
@@ -220,11 +220,11 @@ class TextTokens:
         return text
 
     def _update(self):
-        self.WDB.updateCat('custom_tokens', self.custom_tokens)
+        self.EQXDB.updateCat('custom_tokens', self.custom_tokens)
 
 # ===== History Helpers =====
 def update_history_output_images(new_paths):
-    HDB = WASDatabase(WAS_HISTORY_DATABASE)
+    HDB = EQXDatabase(EQX_HISTORY_DATABASE)
     category = "Output_Images"
     if HDB.catExists("History") and HDB.keyExists("History", category):
         saved_paths = HDB.get("History", category)
@@ -250,17 +250,17 @@ def update_history_output_images(new_paths):
             HDB.insert("History", category, new_paths)
 
 # ===== Config =====
-was_conf_template = {
+eqx_conf_template = {
     "history_display_limit": 36,
     "text_nodes_type": "STRING",
 }
 
 def getSuiteConfig():
     try:
-        with open(WAS_CONFIG_FILE, "r") as f:
+        with open(EQX_CONFIG_FILE, "r") as f:
             return json.load(f)
     except Exception:
-        return was_conf_template
+        return eqx_conf_template
 
 # ===== Node =====
 class SaveImage_EQX:
@@ -298,11 +298,11 @@ class SaveImage_EQX:
 
     RETURN_TYPES = ("IMAGE", "STRING",)
     RETURN_NAMES = ("images", "files",)
-    FUNCTION = "was_save_images"
+    FUNCTION = "eqx_save_images"
     OUTPUT_NODE = True
-    CATEGORY = "WAS Suite/IO"
+    CATEGORY = "EQX Suite/IO"
 
-    def was_save_images(self, images, output_path='', filename_prefix="ComfyUI", filename_suffix="", filename_delimiter='_',
+    def eqx_save_images(self, images, output_path='', filename_prefix="ComfyUI", filename_suffix="", filename_delimiter='_',
                         extension='png', dpi=96, quality=100, optimize_image="true", lossless_webp="false", prompt=None, extra_pnginfo=None,
                         overwrite_mode='false', filename_number_padding=4, filename_number_start='false',
                         show_history='false', show_history_by_prefix="true", embed_workflow="true",
@@ -445,7 +445,7 @@ class SaveImage_EQX:
 
         filtered_paths = []
         if show_history == 'true' and show_previews == 'true':
-            HDB = WASDatabase(WAS_HISTORY_DATABASE)
+            HDB = EQXDatabase(EQX_HISTORY_DATABASE)
             conf = getSuiteConfig()
             if HDB.catExists("History") and HDB.keyExists("History", "Output_Images"):
                 history_paths = HDB.get("History", "Output_Images")
