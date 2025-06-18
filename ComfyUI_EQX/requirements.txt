@@ -1,0 +1,13 @@
+numpy
+torch
+torchvision
+Pillow
+opencv-python
+numba
+scipy
+tqdm
+transformers
+huggingface-hub
+accelerate
+nudenet
+facexlib 
