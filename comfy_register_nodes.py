@@ -7,7 +7,7 @@ class LoadPromptFromFileEQXNode:
         return {
             "required": {
                 "file_path": ("STRING", {"default": "", "multiline": False}),
-                "seed": ("INT", {"default": 0, "min": 0, "max": 10000000}),
+                "seed": ("INT", {"default": 0, "min": 0, "max": 18446744073709551615}),
             }
         }
 
