@@ -1,0 +1,10 @@
+# Resolution Presets for Social Media
+# Format: name:width,height or name:widthxheight
+# Updated for 2024/2025 standards
+
+Instagram (Square post) - 1080x1080 px (1:1):1080x1080
+Instagram (Vertical post) - 1080x1350 px (4:5):1080x1350
+Instagram (Vertical post - TALL) - 1440x1888 px (3:4):1440x1888
+Instagram (Horizontal post) - 1080x566 px (1.91:1):1080x566
+Instagram (Stories/Reels) - 1080x1920 px (9:16):1080x1920
+TikTok (Video, stories, carousel image) - 1080x1920 px (9:16):1080x1920

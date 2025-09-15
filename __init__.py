@@ -4,18 +4,25 @@ import subprocess
 import importlib
 
 # ASCII Art Banner
-print("═══════════════════════════════════════")
-print("═══════════════════════════════════════")
-print("═══════════════════════════════════════")
-banner = """
+try:
+    print("═══════════════════════════════════════")
+    print("═══════════════════════════════════════")
+    print("═══════════════════════════════════════")
+    banner = """
 ███████╗ ██████╗ ██╗  ██╗
 ██╔════╝██╔═══██╗╚██╗██╔╝
-█████╗  ██║   ██║ ╚███╔╝ 
-██╔══╝  ██║ ╚╗██║ ██╔██╗ 
+█████╗  ██║   ██║ ╚███╔╝
+██╔══╝  ██║ ╚╗██║ ██╔██╗
 ███████╗╚██████╔╝██╔╝ ██╗
-╚══════╝     ╚═╝╚═╝  ╚═╝ 
+╚══════╝     ╚═╝╚═╝  ╚═╝
 """
-print(banner)
+    print(banner)
+except UnicodeEncodeError:
+    # Fallback to simple ASCII if Unicode characters fail
+    print("=" * 39)
+    print("=" * 39)
+    print("=" * 39)
+    print("[ComfyUI_EQX]")
 
 def _ensure_package(package):
     """Checks if a package is installed, and if not, tries to install it from PyPI."""
@@ -82,16 +89,34 @@ from .extract_safetensors_filename import ExtractSafetensorsFilename
 NODE_CLASS_MAPPINGS["Extract LORA name - EQX"] = ExtractSafetensorsFilename
 NODE_DISPLAY_NAME_MAPPINGS["Extract LORA name - EQX"] = "Extract LORA name - EQX"
 
-# NSFW Detector
-from .nsfw_detector_eqx import NSFW_Detector_EQX
-NODE_CLASS_MAPPINGS["NSFW Detector EQX"] = NSFW_Detector_EQX
-NODE_DISPLAY_NAME_MAPPINGS["NSFW Detector EQX"] = "NSFW Detector EQX"
+# NSFW Detector Nodes
+# Try to import NSFW detector nodes, but don't fail if nudenet is missing
+try:
+    from .nsfw_detector_eqx import NSFW_Detector_EQX
+    NODE_CLASS_MAPPINGS["NSFW Detector EQX"] = NSFW_Detector_EQX
+    NODE_DISPLAY_NAME_MAPPINGS["NSFW Detector EQX"] = "NSFW Detector EQX"
 
-# NSFW Detector Advanced EQX
-from .nsfw_detector_advanced_eqx import NSFWDetectorAdvancedEQX
-NODE_CLASS_MAPPINGS["NSFW Detector Advanced EQX"] = NSFWDetectorAdvancedEQX
-NODE_DISPLAY_NAME_MAPPINGS["NSFW Detector Advanced EQX"] = "NSFW Detector Advanced EQX"
+    from .nsfw_detector_advanced_eqx import NSFWDetectorAdvancedEQX
+    NODE_CLASS_MAPPINGS["NSFW Detector Advanced EQX"] = NSFWDetectorAdvancedEQX
+    NODE_DISPLAY_NAME_MAPPINGS["NSFW Detector Advanced EQX"] = "NSFW Detector Advanced EQX"
 
+    # Body Crop & Mask EQX
+    from .body_crop_mask_eqx import BodyCropMaskEQX
+    NODE_CLASS_MAPPINGS["BodyCropMaskEQX"] = BodyCropMaskEQX
+    NODE_DISPLAY_NAME_MAPPINGS["BodyCropMaskEQX"] = "Body Crop & Mask EQX"
+except ImportError as e:
+    print(f"[ComfyUI_EQX] Warning: NSFW/Body detector nodes unavailable - missing dependency 'nudenet'. Install with: pip install nudenet")
+    print(f"[ComfyUI_EQX] Error details: {e}")
+
+# Resolution Selector EQX
+from .resolution_selector_eqx import ResolutionSelectorEQX
+NODE_CLASS_MAPPINGS["ResolutionSelectorEQX"] = ResolutionSelectorEQX
+NODE_DISPLAY_NAME_MAPPINGS["ResolutionSelectorEQX"] = "Resolution Selector EQX"
+
+# Uncrop by Mask EQX
+from .uncrop_by_mask_eqx import UncropByMaskEQX
+NODE_CLASS_MAPPINGS["UncropByMaskEQX"] = UncropByMaskEQX
+NODE_DISPLAY_NAME_MAPPINGS["UncropByMaskEQX"] = "Uncrop by Mask EQX"
 
 # WorkFlow Check
 from .workflow_check_node import NODE_CLASS_MAPPINGS as workflow_check_class_mappings
@@ -126,12 +151,33 @@ if _ensure_package("facexlib"):
         NODE_CLASS_MAPPINGS.update(face_detect_out_class_mappings)
         NODE_DISPLAY_NAME_MAPPINGS.update(face_detect_out_display_name_mappings)
 
+        # FaceCropMaskEQX Node
+        from .face_crop_mask_eqx import NODE_CLASS_MAPPINGS as face_crop_mask_class_mappings
+        from .face_crop_mask_eqx import NODE_DISPLAY_NAME_MAPPINGS as face_crop_mask_display_name_mappings
+        NODE_CLASS_MAPPINGS.update(face_crop_mask_class_mappings)
+        NODE_DISPLAY_NAME_MAPPINGS.update(face_crop_mask_display_name_mappings)
+
     except Exception as e:
         print(f"[ComfyUI_EQX] Warning: Could not import FaceCT nodes even after successful dependency check. Error: {e}")
+
+# Video Combine Nodes
+try:
+    from .video_combine_nodes import NODE_CLASS_MAPPINGS as video_combine_class_mappings
+    from .video_combine_nodes import NODE_DISPLAY_NAME_MAPPINGS as video_combine_display_name_mappings
+    NODE_CLASS_MAPPINGS.update(video_combine_class_mappings)
+    NODE_DISPLAY_NAME_MAPPINGS.update(video_combine_display_name_mappings)
+    print("[ComfyUI_EQX] Video Combine nodes loaded successfully")
+except ImportError as e:
+    print(f"[ComfyUI_EQX] Warning: Could not import Video Combine nodes. Error: {e}")
 
 __all__ = list(NODE_CLASS_MAPPINGS)
 
 print(f"[ComfyUI_EQX] Loaded {len(NODE_CLASS_MAPPINGS)} nodes (v{__version__})")
-print("═══════════════════════════════════════")
-print("═══════════════════════════════════════")
-print("═══════════════════════════════════════")
+try:
+    print("═══════════════════════════════════════")
+    print("═══════════════════════════════════════")
+    print("═══════════════════════════════════════")
+except UnicodeEncodeError:
+    print("=" * 39)
+    print("=" * 39)
+    print("=" * 39)
