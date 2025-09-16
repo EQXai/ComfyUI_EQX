@@ -118,6 +118,11 @@ from .uncrop_by_mask_eqx import UncropByMaskEQX
 NODE_CLASS_MAPPINGS["UncropByMaskEQX"] = UncropByMaskEQX
 NODE_DISPLAY_NAME_MAPPINGS["UncropByMaskEQX"] = "Uncrop by Mask EQX"
 
+# Aspect Ratio Crop EQX
+from .aspect_ratio_crop_eqx import AspectRatioCropEQX
+NODE_CLASS_MAPPINGS["AspectRatioCropEQX"] = AspectRatioCropEQX
+NODE_DISPLAY_NAME_MAPPINGS["AspectRatioCropEQX"] = "Aspect Ratio Crop EQX"
+
 # WorkFlow Check
 from .workflow_check_node import NODE_CLASS_MAPPINGS as workflow_check_class_mappings
 from .workflow_check_node import NODE_DISPLAY_NAME_MAPPINGS as workflow_check_display_name_mappings
