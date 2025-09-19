@@ -175,6 +175,56 @@ try:
 except ImportError as e:
     print(f"[ComfyUI_EQX] Warning: Could not import Video Combine nodes. Error: {e}")
 
+# Video Fragments Node
+try:
+    from .video_fragments_node import NODE_CLASS_MAPPINGS as video_fragments_class_mappings
+    from .video_fragments_node import NODE_DISPLAY_NAME_MAPPINGS as video_fragments_display_name_mappings
+    NODE_CLASS_MAPPINGS.update(video_fragments_class_mappings)
+    NODE_DISPLAY_NAME_MAPPINGS.update(video_fragments_display_name_mappings)
+    print("[ComfyUI_EQX] Video Fragments node loaded successfully")
+except ImportError as e:
+    print(f"[ComfyUI_EQX] Warning: Could not import Video Fragments node. Error: {e}")
+
+# Image Duplicate Remover Node
+try:
+    from .image_duplicate_remover import NODE_CLASS_MAPPINGS as duplicate_remover_class_mappings
+    from .image_duplicate_remover import NODE_DISPLAY_NAME_MAPPINGS as duplicate_remover_display_name_mappings
+    NODE_CLASS_MAPPINGS.update(duplicate_remover_class_mappings)
+    NODE_DISPLAY_NAME_MAPPINGS.update(duplicate_remover_display_name_mappings)
+    print("[ComfyUI_EQX] Image Duplicate Remover node loaded successfully")
+except ImportError as e:
+    print(f"[ComfyUI_EQX] Warning: Could not import Image Duplicate Remover node. Error: {e}")
+
+# Batch Image Trimmer Node
+try:
+    from .batch_image_trimmer import NODE_CLASS_MAPPINGS as batch_trimmer_class_mappings
+    from .batch_image_trimmer import NODE_DISPLAY_NAME_MAPPINGS as batch_trimmer_display_name_mappings
+    NODE_CLASS_MAPPINGS.update(batch_trimmer_class_mappings)
+    NODE_DISPLAY_NAME_MAPPINGS.update(batch_trimmer_display_name_mappings)
+    print("[ComfyUI_EQX] Batch Image Trimmer node loaded successfully")
+except ImportError as e:
+    print(f"[ComfyUI_EQX] Warning: Could not import Batch Image Trimmer node. Error: {e}")
+
+# Video Fragments Splitter Node
+try:
+    from .video_fragments_splitter import NODE_CLASS_MAPPINGS as fragments_splitter_class_mappings
+    from .video_fragments_splitter import NODE_DISPLAY_NAME_MAPPINGS as fragments_splitter_display_name_mappings
+    NODE_CLASS_MAPPINGS.update(fragments_splitter_class_mappings)
+    NODE_DISPLAY_NAME_MAPPINGS.update(fragments_splitter_display_name_mappings)
+    print("[ComfyUI_EQX] Video Fragments Splitter node loaded successfully")
+except ImportError as e:
+    print(f"[ComfyUI_EQX] Warning: Could not import Video Fragments Splitter node. Error: {e}")
+
+# Batch Image Trimmer Multi Node
+try:
+    from .batch_image_trimmer_multi import NODE_CLASS_MAPPINGS as batch_trimmer_multi_class_mappings
+    from .batch_image_trimmer_multi import NODE_DISPLAY_NAME_MAPPINGS as batch_trimmer_multi_display_name_mappings
+    NODE_CLASS_MAPPINGS.update(batch_trimmer_multi_class_mappings)
+    NODE_DISPLAY_NAME_MAPPINGS.update(batch_trimmer_multi_display_name_mappings)
+    print("[ComfyUI_EQX] Batch Image Trimmer Multi node loaded successfully")
+except ImportError as e:
+    print(f"[ComfyUI_EQX] Warning: Could not import Batch Image Trimmer Multi node. Error: {e}")
+
 __all__ = list(NODE_CLASS_MAPPINGS)
 
 print(f"[ComfyUI_EQX] Loaded {len(NODE_CLASS_MAPPINGS)} nodes (v{__version__})")
