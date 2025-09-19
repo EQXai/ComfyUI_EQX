@@ -64,6 +64,16 @@ class FaceCropMaskEQX:
                     "step": 1,
                     "display": "slider"
                 }),
+                "max_resolution": ("INT", {
+                    "default": 0,
+                    "min": 0,
+                    "max": 4096,
+                    "step": 64,
+                    "display": "number"
+                }),
+                "sort_mode": (["largest", "topmost", "top_weighted"], {
+                    "default": "largest"
+                }),
             },
             "optional": {
                 "model": ("RETINAFACE",),
@@ -150,9 +160,78 @@ class FaceCropMaskEQX:
 
         return mask
 
+    def resize_if_needed(self, image: Image.Image, max_resolution: int) -> Image.Image:
+        """
+        Resize image if needed to fit within max_resolution.
+
+        Args:
+            image: PIL Image to resize
+            max_resolution: Maximum resolution for the longest side (0 = no resize)
+
+        Returns:
+            Resized PIL Image or original if no resize needed
+        """
+        if max_resolution <= 0:
+            return image  # No resizing requested
+
+        width, height = image.size
+        max_side = max(width, height)
+
+        if max_side <= max_resolution:
+            return image  # Already within limit
+
+        # Calculate new dimensions maintaining aspect ratio
+        scale = max_resolution / max_side
+        new_width = int(width * scale)
+        new_height = int(height * scale)
+
+        print(f"[FaceCropMaskEQX] Resizing from {width}x{height} to {new_width}x{new_height}")
+        return image.resize((new_width, new_height), Image.Resampling.LANCZOS)
+
+    def sort_faces(self, faces: List, image_height: int, sort_mode: str) -> List:
+        """
+        Sort faces based on the selected mode.
+
+        Args:
+            faces: List of face detections [x1, y1, x2, y2, confidence]
+            image_height: Height of the image for normalization
+            sort_mode: Sorting mode - "largest", "topmost", or "top_weighted"
+
+        Returns:
+            Sorted list of faces
+        """
+        if sort_mode == "largest":
+            # Sort by area (largest first)
+            return sorted(faces, key=lambda f: (f[2]-f[0]) * (f[3]-f[1]), reverse=True)
+
+        elif sort_mode == "topmost":
+            # Sort by top position (lowest y1 value first)
+            return sorted(faces, key=lambda f: f[1])
+
+        elif sort_mode == "top_weighted":
+            # Combined score: 70% position, 30% area
+            def combined_score(face):
+                x1, y1, x2, y2 = face[:4]
+                area = (x2 - x1) * (y2 - y1)
+                # Normalize y position to 0-1 range (0 = top, 1 = bottom)
+                y_normalized = y1 / image_height
+                # Higher score for faces that are both large and near the top
+                # (1 - y_normalized) gives higher values for faces near the top
+                # We weight position more heavily (0.7) than size (0.3)
+                position_score = (1 - y_normalized) * 0.7
+                # Normalize area to a reasonable scale (assuming max face might be 1/4 of image)
+                area_normalized = min(area / (image_height * image_height * 0.25), 1.0) * 0.3
+                return position_score + area_normalized
+
+            return sorted(faces, key=combined_score, reverse=True)
+
+        else:
+            # Default to largest
+            return sorted(faces, key=lambda f: (f[2]-f[0]) * (f[3]-f[1]), reverse=True)
+
     def detect_and_crop(self, image: torch.Tensor, padding_pixels: int, square_crop: bool,
-                       face_index: int, confidence: float, mask_blur: int,
-                       model: Optional[object] = None) -> Tuple:
+                       face_index: int, confidence: float, mask_blur: int, max_resolution: int,
+                       sort_mode: str, model: Optional[object] = None) -> Tuple:
         """
         Detect faces and create cropped image and mask.
 
@@ -163,6 +242,8 @@ class FaceCropMaskEQX:
             face_index: Which face to use if multiple detected (0 = first/largest)
             confidence: Minimum confidence for face detection
             mask_blur: Blur radius for mask edges
+            max_resolution: Maximum resolution for output (0 = no limit)
+            sort_mode: Face sorting mode - "largest", "topmost", or "top_weighted"
             model: Optional pre-loaded RetinaFace model
 
         Returns:
@@ -197,8 +278,9 @@ class FaceCropMaskEQX:
 
         print(f"[FaceCropMaskEQX] Detected {len(faces)} faces")
 
-        # Sort faces by area (largest first)
-        faces_sorted = sorted(faces, key=lambda f: (f[2]-f[0]) * (f[3]-f[1]), reverse=True)
+        # Sort faces based on selected mode
+        faces_sorted = self.sort_faces(faces, img_np.shape[0], sort_mode)
+        print(f"[FaceCropMaskEQX] Using sort mode: {sort_mode}")
 
         # Select the requested face
         if face_index >= len(faces_sorted):
@@ -249,6 +331,10 @@ class FaceCropMaskEQX:
 
         # Crop the face from the original image
         face_crop = pil_image.crop((x1_pad, y1_pad, x2_pad, y2_pad))
+
+        # Apply resizing if max_resolution is specified
+        face_crop = self.resize_if_needed(face_crop, max_resolution)
+
         face_crop_tensor = self.pil_to_tensor(face_crop)
 
         # Create mask (white where face is, black elsewhere)
